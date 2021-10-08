@@ -2,8 +2,6 @@ package com.example.problem2.utils
 
 import android.text.InputFilter
 import android.widget.EditText
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -18,7 +16,7 @@ fun String.isValidEmail(): Boolean {
 fun EditText.applyFilter(){
     val blockCharacterSet = "<>&"
 
-    val filter = InputFilter { source, start, end, dest, dstart, dend ->
+    val filter = InputFilter { source, _, _, _, _, _ ->
         if (source != null && blockCharacterSet.contains("" + source)) {
             ""
         } else null

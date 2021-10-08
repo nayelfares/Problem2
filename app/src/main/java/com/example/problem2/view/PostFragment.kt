@@ -115,6 +115,7 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
 
     override fun onDestroy() {
         super.onDestroy()
+        // close SQLiteDatabase on destroy fragment
         dbManager?.close()
     }
 }

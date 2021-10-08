@@ -1,6 +1,6 @@
 package com.example.problem2.network
 
-import com.example.problem2.network.model.Post
+import com.example.problem2.model.Post
 import com.example.problem2.network.model.PublishPostReq
 import com.example.problem2.network.response.PublishPostRes
 import io.reactivex.Observable

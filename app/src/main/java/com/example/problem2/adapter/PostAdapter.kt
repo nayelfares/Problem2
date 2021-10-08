@@ -7,20 +7,20 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.problem2.R
-import com.example.problem2.network.model.Post
+import com.example.problem2.model.Post
 import kotlin.collections.ArrayList
 
 class PostAdapter(
-    mContext:Context,
+    context:Context,
     resId:Int,
-    val mList: ArrayList<Post>) : ArrayAdapter<Post>(mContext, resId, mList) {
+    private val postsList: ArrayList<Post>) : ArrayAdapter<Post>(context, resId, postsList) {
 
-    val inf = LayoutInflater.from(mContext)
+    val inf = LayoutInflater.from(context)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var tempRow = convertView
         if (tempRow == null) {
-            tempRow = inf.inflate(R.layout.post_list_item, null)
+            tempRow = inf.inflate(R.layout.post_list_item, parent,false)
         }
         val row = tempRow!!
 
@@ -28,10 +28,10 @@ class PostAdapter(
         val title = row.findViewById<TextView>(R.id.title)
         val body = row.findViewById<TextView>(R.id.description)
 
-        val studentData = mList[position]
+        val post = postsList[position]
 
-        title.text = studentData.title
-        body.text = studentData.body
+        title.text = post.title
+        body.text = post.body
 
 
         return row

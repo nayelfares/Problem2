@@ -1,4 +1,4 @@
-package com.example.problem2.network.model
+package com.example.problem2.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
