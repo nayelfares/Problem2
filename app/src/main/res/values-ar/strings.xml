@@ -11,4 +11,5 @@
     <string name="publish">Publish</string>
     <string name="somethimg_went_wrong">Something went wrong</string>
     <string name="email_not_valid">Email not valid</string>
+    <string name="post_list">Posts list</string>
 </resources>

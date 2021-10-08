@@ -98,7 +98,7 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
             if (it!=null){
                 val bundle =  Bundle()
                 bundle.putSerializable("posts", it)
-                findNavController().navigate(R.id.action_oneFragment_to_twoFragment,bundle)
+                findNavController().navigate(R.id.action_postFragment_to_listFragment,bundle)
             }else{
                 showMessage("get List failed")
             }

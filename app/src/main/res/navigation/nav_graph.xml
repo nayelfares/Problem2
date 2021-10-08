@@ -2,18 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph"
-            app:startDestination="@id/oneFragment">
+            app:startDestination="@id/postFragment">
 
-    <fragment android:id="@+id/oneFragment" android:name="com.example.problem2.view.PostFragment"
+    <fragment android:id="@+id/postFragment" android:name="com.example.problem2.view.PostFragment"
               android:label="fragment_one" tools:layout="@layout/fragment_post">
-        <action android:id="@+id/action_oneFragment_to_twoFragment"
-                app:destination="@id/twoFragment"
+        <action android:id="@+id/action_postFragment_to_listFragment"
+                app:destination="@id/listFragment"
              />
     </fragment>
-    <fragment android:id="@+id/twoFragment" android:name="com.example.problem2.view.ListFragment"
+    <fragment android:id="@+id/listFragment"  android:name="com.example.problem2.view.ListFragment"
               android:label="fragment_two" tools:layout="@layout/fragment_list">
         <action
-                android:id="@+id/action_twoFragment_to_oneFragment"
-                app:destination="@id/oneFragment" />
+                android:id="@+id/action_listFragment_to_postFragment"
+                app:destination="@id/postFragment" />
     </fragment>
 </navigation>
