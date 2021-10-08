@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.problem2.network.model.PublishPostReq
 import java.util.ArrayList
+import javax.security.auth.DestroyFailedException
 
 class DbManager(context: Context) {
     companion object{
@@ -53,6 +54,10 @@ class DbManager(context: Context) {
             retArray.add(PublishPostReq(email,publisherType,isJoke,description))
         }
         return retArray;
+    }
+
+    fun close(){
+        db?.close()
     }
 
 

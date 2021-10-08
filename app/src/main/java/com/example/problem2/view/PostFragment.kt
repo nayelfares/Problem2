@@ -1,18 +1,15 @@
-package com.example.problem2
+package com.example.problem2.view
 
 
 import android.content.ContentValues
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.fragment.app.Fragment
+import android.os.*
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import com.example.problem2.R
 import com.example.problem2.foundation.BaseFragment
 import com.example.problem2.sqllite.DbManager
-import com.example.problem2.utils.applyFilter
-import com.example.problem2.utils.isValidEmail
+import com.example.problem2.utils.*
 import kotlinx.android.synthetic.main.fragment_post.*
 import com.example.problem2.view_model.ProjectViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +20,7 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
     private val paths = arrayOf("Blogger", "Teacher")
     private var publishType = paths[0]
     private var isJoke = false
+    var dbManager : DbManager?=null
     lateinit var projectViewModel : ProjectViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,13 +71,13 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
             if (it!=null){
                 showMessage("Success")
                 Handler(Looper.getMainLooper()).post{
-                    val dbManager = DbManager(requireContext())
+                    dbManager = DbManager(requireContext())
                     val values = ContentValues()
                     values.put(DbManager.EMAIL, inputEmail.text.toString())
                     values.put(DbManager.PUBLISHER_TYPE, publishType)
                     values.put(DbManager.IS_JOKE, if (isJoke) 1 else 0)
                     values.put(DbManager.DESCRIPTION, description.text.toString())
-                    dbManager.insert(values)
+                    dbManager?.insert(values)
                 }
             }else{
                 showMessage("Failure")
@@ -92,10 +90,10 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
         publishType = paths[position]
     }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
+    override fun onDestroy() {
+        super.onDestroy()
+        dbManager?.close()
     }
-
-
-
 }
