@@ -1,15 +1,21 @@
 package com.example.problem2
 
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.*
+import androidx.lifecycle.lifecycleScope
 import com.example.problem2.foundation.BaseFragment
+import com.example.problem2.sqllite.DbManager
 import com.example.problem2.utils.applyFilter
 import com.example.problem2.utils.isValidEmail
 import kotlinx.android.synthetic.main.fragment_post.*
 import com.example.problem2.view_model.ProjectViewModel
+import kotlinx.coroutines.launch
 
 
 class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSelectedListener {
@@ -44,14 +50,16 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
 
         //Handling Submit Button
         submit.setOnClickListener {
-            loading()
             if (inputEmail.text.toString().isValidEmail()) {
-                projectViewModel.publish(
-                    inputEmail.text.toString(),
-                    publishType,
-                    isJoke,
-                    description.text.toString()
-                )
+                loading()
+                lifecycleScope.launch {
+                    projectViewModel.publish(
+                        inputEmail.text.toString(),
+                        publishType,
+                        if (isJoke) 1 else 0,
+                        description.text.toString()
+                    )
+                }
             }
             else
                 showMessage(getString(R.string.email_not_valid))
@@ -64,6 +72,15 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
             stopLoading()
             if (it!=null){
                 showMessage("Success")
+                Handler(Looper.getMainLooper()).post{
+                    val dbManager = DbManager(requireContext())
+                    val values = ContentValues()
+                    values.put(DbManager.EMAIL, inputEmail.text.toString())
+                    values.put(DbManager.PUBLISHER_TYPE, publishType)
+                    values.put(DbManager.IS_JOKE, if (isJoke) 1 else 0)
+                    values.put(DbManager.DESCRIPTION, description.text.toString())
+                    dbManager.insert(values)
+                }
             }else{
                 showMessage("Failure")
             }

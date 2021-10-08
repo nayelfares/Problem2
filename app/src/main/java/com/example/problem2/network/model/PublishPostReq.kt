@@ -10,7 +10,7 @@ data class PublishPostReq(
         var publisher_type: String,
 
         @SerializedName("is_joke")
-        var is_joke: Boolean,
+        var is_joke: Int,
 
         @SerializedName("description")
         var description: String
