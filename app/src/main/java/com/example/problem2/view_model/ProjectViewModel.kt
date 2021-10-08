@@ -1,10 +1,10 @@
 package com.example.problem2.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.problem2.network.ApiManager
+import com.example.problem2.network.model.Post
 import com.example.problem2.network.model.PublishPostReq
 import com.example.problem2.network.response.PublishPostRes
 import io.reactivex.Observable
@@ -13,12 +13,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
+import java.util.ArrayList
 
 class ProjectViewModel :ViewModel(){
     private val _publishResponse: MutableLiveData<PublishPostRes> = MutableLiveData()
     val publishResponse: LiveData<PublishPostRes>
         get() = _publishResponse
 
+
+
+    private val _getListResponse: MutableLiveData<ArrayList<Post>> = MutableLiveData()
+    val getListResponse: LiveData<ArrayList<Post>>
+        get() = _getListResponse
         fun publish(email:String,publisherType:String,isJoke:Int,description:String) {
             val loginObservable: Observable<PublishPostRes> =
                 ApiManager.postService.publish(
@@ -42,5 +48,27 @@ class ProjectViewModel :ViewModel(){
                     override fun onComplete() {}
                 })
         }
+
+     fun getList() {
+        val loginObservable: Observable<ArrayList<Post>> =
+            ApiManager.postService.getList( )
+        loginObservable.subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<ArrayList<Post>> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(response: ArrayList<Post>) {
+                    try {
+                        _getListResponse.value = response
+                    }catch (e:Exception){
+                        _getListResponse.value = null
+                    }
+                }
+                override fun onError(e: Throwable) {
+                    _getListResponse.value = null
+                }
+
+                override fun onComplete() {}
+            })
+    }
 
 }

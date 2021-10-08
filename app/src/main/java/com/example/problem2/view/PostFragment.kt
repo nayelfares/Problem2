@@ -3,9 +3,11 @@ package com.example.problem2.view
 
 import android.content.ContentValues
 import android.os.*
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.problem2.R
 import com.example.problem2.foundation.BaseFragment
 import com.example.problem2.sqllite.DbManager
@@ -13,6 +15,7 @@ import com.example.problem2.utils.*
 import kotlinx.android.synthetic.main.fragment_post.*
 import com.example.problem2.view_model.ProjectViewModel
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSelectedListener {
@@ -20,8 +23,8 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
     private val paths = arrayOf("Blogger", "Teacher")
     private var publishType = paths[0]
     private var isJoke = false
-    var dbManager : DbManager?=null
-    lateinit var projectViewModel : ProjectViewModel
+    private var dbManager : DbManager?=null
+    private lateinit var projectViewModel : ProjectViewModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -67,9 +70,7 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
 
     private fun subscribeObserver(){
         projectViewModel.publishResponse.observe(viewLifecycleOwner){
-            stopLoading()
             if (it!=null){
-                showMessage("Success")
                 Handler(Looper.getMainLooper()).post{
                     dbManager = DbManager(requireContext())
                     val values = ContentValues()
@@ -77,15 +78,35 @@ class PostFragment : BaseFragment(R.layout.fragment_post), AdapterView.OnItemSel
                     values.put(DbManager.PUBLISHER_TYPE, publishType)
                     values.put(DbManager.IS_JOKE, if (isJoke) 1 else 0)
                     values.put(DbManager.DESCRIPTION, description.text.toString())
-                    dbManager?.insert(values)
+                    try {
+                        dbManager?.insert(values)
+                    }catch (e:Exception){
+                        Log.e("Exception",e.message.toString())
+                    }
+                    lifecycleScope.launch {
+                        projectViewModel.getList()
+                    }
                 }
             }else{
-                showMessage("Failure")
+                stopLoading()
+                showMessage("publish failed")
+            }
+        }
+
+        projectViewModel.getListResponse.observe(viewLifecycleOwner){
+            stopLoading()
+            if (it!=null){
+                val bundle =  Bundle()
+                bundle.putSerializable("posts", it)
+                findNavController().navigate(R.id.action_oneFragment_to_twoFragment,bundle)
+            }else{
+                showMessage("get List failed")
             }
         }
     }
 
 
+    // dropdown on item select
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         publishType = paths[position]
     }

@@ -18,7 +18,7 @@ interface PostService {
     ): Observable<PublishPostRes>
 
     @GET("posts")
-    suspend fun getList(): Observable<ArrayList<Post>>
+    fun getList(): Observable<ArrayList<Post>>
 }
 
 
